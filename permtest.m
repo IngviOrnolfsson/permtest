@@ -12,13 +12,21 @@ arguments
     progFlag logical = true             % Flag to display progress
 end
 
+
+%% PARSE INPUT
+
+% Set empty input arguments to default
 if isempty(Np);         Np = 10000;                         end
 if isempty(statFun);    statFun = @(x) mean(x,'omitnan');   end
 if isempty(sidedness);  sidedness = 'two';                  end
 if isempty(type);       type = 'indep';                     end
 if isempty(progFlag);   progFlag = true;                    end
 
-% TO DO: Check number of arguments to functions
+% Check input restrictions
+assert(size(X,2)<=2 & size(X,2)>0)
+assert(nargin(statFun)==1);
+assert(any(strcmp(sidedness,{'two','one'})))
+assert(any(strcmp(type,{'indep','paired'})))
 
 % Select distance function
 switch sidedness
@@ -40,6 +48,9 @@ end
 [n2,m2] = size(X{2});
 assert(m1==m2); m = m1;
 Ntot = n1+n2;
+
+
+%% PERMUTATION TEST
 
 % Compute observed test statistic
 Tobs = distFun(statFun(X{1}),statFun(X{2}));
@@ -75,7 +86,7 @@ switch type
         % Permutation loop
         for i = 1:Np
 
-            % Get permuted indices 
+            % Get permuted indices
             idxPerm = randperm(Ntot);
             idx1 = idxPerm(1:n1);
             idx2 = idxPerm(n1+1:end);
@@ -94,33 +105,36 @@ end
 p = mean(Tobs <= Tperm);
 
 
-%% Plotting
+%% PLOTTING
+
 if nargout == 0
 
-    
-figure();clf;
-tiledlayout(m+1,1)
+    figure();clf;
+    tiledlayout(m+1,1)
 
-for i = 1:m
-[~,e] = histcounts([X{1}(:,i);X{2}(:,i)],20);
-nexttile
-histogram(X{1}(:,i),'DisplayName',['Group 1, N = ' num2str(n1)],'BinEdges',e);
-hold on
-histogram(X{2}(:,i),'DisplayName',['Group 2, N = ' num2str(n2)],'BinEdges',e);
-title(['Variable ' num2str(i)])
-legend;
+    for i = 1:m
+        [~,e] = histcounts([X{1}(:,i);X{2}(:,i)],20);
+        nexttile
+        histogram(X{1}(:,i),'DisplayName',['Group 1, N = ' num2str(n1)],'BinEdges',e);
+        hold on
+        histogram(X{2}(:,i),'DisplayName',['Group 2, N = ' num2str(n2)],'BinEdges',e);
+        title(['Variable ' num2str(i)])
+        legend;
+    end
+
+    nexttile
+    histogram(Tperm,'DisplayName',['$T_{perm}$, $N_{perm}$ = ' num2str(Np)])
+    hold on
+    xline(Tobs,'k--','DisplayName',['$T_{obs}$, $p = ' num2str(p) '$' ])
+    title('Test statistic')
+    legend;
+    ltxFormat()
 end
 
-nexttile
-histogram(Tperm,'DisplayName',['$T_{perm}$, $N_{perm}$ = ' num2str(Np)])
-hold on
-xline(Tobs,'k--','DisplayName',['$T_{obs}$, $p = ' num2str(p) '$' ])
-title('Test statistic')
-legend;
-ltxFormat()
-end
 
-% Utility function for shuffling
+%% UTILITY FUNCTIONS
+
+% Shuffling
 function out = shuffle(mat,dim)
 arguments
     mat
@@ -144,7 +158,7 @@ else
     error('dimension not supported')
 end
 
-% Utility function for formatting plots
+% Formatting plots
 function ltxFormat(figs)
 
 arguments
@@ -184,7 +198,7 @@ for f = 1:nF
         axe.YLabel.String = strrep(axe.YLabel.String,'%','\%');
         axe.ZLabel.String = strrep(axe.ZLabel.String,'%','\%');
 
-        
+
         if ~isempty(axe.XTickLabel)
             axe.XTick = axe.XTick;
             axe.XTickLabel = cellfun(@(x) strrep(x,'%','\%'),axe.XTickLabel,'UniformOutput',false);
