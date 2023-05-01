@@ -1,5 +1,4 @@
 %% Example 1: Alpaca wool quality
-startup;
 
 % Goals: 
 % - Calculate the p-value for the alpaca wool quality example

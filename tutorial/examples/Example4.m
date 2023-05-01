@@ -1,5 +1,4 @@
 %% Example 4: Learning danish words
-startup;
 
 % Goals: 
 % - This example is particularly useful if you do modelling

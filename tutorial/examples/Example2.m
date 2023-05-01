@@ -1,5 +1,4 @@
 %% Example 2: HEA grades
-startup;
 
 % Goals: 
 % - Is there a significant difference between the two courses?

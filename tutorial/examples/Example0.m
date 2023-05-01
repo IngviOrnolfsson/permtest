@@ -1,5 +1,4 @@
 %% Example 0 - Two normal distributions
-startup;
 
 % Goals: 
 % - Play around with the distribution parameters
@@ -11,7 +10,7 @@ startup;
 N1 = 100;            % Size of the first sample
 N2 = 100;            % Size of second sample
 Np = 1000;          % Number of permutations to make
-d = 0.2;            % Distance between distributions
+d = 0.3;            % Distance between distributions
 s1 = 1;             % Sigma of distribution 1
 s2 = 1;             % Sigma of distribution 2
 
@@ -26,3 +25,4 @@ permtest({x1,x2},Np,[],[],'indep');
 
 % Discussion points
 % - Did the permutation test always provide similar p-values as the t-test?
+% - Are they answering the same question?
