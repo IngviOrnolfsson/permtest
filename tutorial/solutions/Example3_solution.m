@@ -1,5 +1,4 @@
 %% Example 3: CPH distances
-startup;
 
 % NB! Run part 1 first - proceed to part 2 when you're finished with part 1.
 
